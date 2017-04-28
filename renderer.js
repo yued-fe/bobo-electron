@@ -685,10 +685,6 @@ var dialog = electron.remote.dialog;
   		// 写入项目配置数据
 		fs.writeFile(self.dataStoreDir, JSON.stringify(jsonProject), function (err) {
 			// 然后要把config公用配置带到项目中
-			if (err) {
-				alert(err);
-				return;
-			}
 			// 在全局存储新的项目数据
 			self.jsonProject = jsonProject;
 			self.log('SVN配置更新完毕。');

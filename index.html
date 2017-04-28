@@ -174,7 +174,7 @@
     </form>
   </script>
 
-  <script src="http://qidian.gtimg.com/c/=/lulu/theme/modern/js/plugin/jquery.js,/lulu/theme/modern/js/common/ui/Select.js,/lulu/theme/modern/js/common/ui/Loading.js,/lulu/theme/modern/js/common/ui/Dialog.js,/lulu/theme/modern/js/common/ui/LightTip.js,/lulu/theme/modern/js/common/ui/Follow.js,/lulu/theme/modern/js/common/ui/ErrorTip.js,/lulu/theme/modern/js/common/ui/Drop.js,/lulu/theme/modern/js/common/ui/Validate.js,/lulu/theme/modern/js/common/ui/Datalist.js"></script>
+  <script src="lulu.js"></script>
 
   <script>
   window.alert = function (text, type) {
@@ -183,20 +183,6 @@
     });
   };
 
-    if (typeof require == 'function') {
-      require('./renderer.js');
-    } else {
-      require = function () { 
-        return {
-          format: function () {},
-          join: function() {},
-          existsSync: function() {},
-          remote: {
-            dialog: function () {}
-          }
-        }; 
-      };
-      document.write('<script src="./renderer.js"><\/script>');
-    }
+  require('./renderer.js');
   </script>
 </html>

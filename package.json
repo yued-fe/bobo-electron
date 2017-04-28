@@ -4,7 +4,8 @@
   "description": "波波Electron桌面版",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package": "electron-packager . bobo --all --out ../electron"
   },
   "repository": "https://github.com/yued-fe/bobo-electron",
   "keywords": [
