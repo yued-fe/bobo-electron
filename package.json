@@ -1,0 +1,20 @@
+{
+  "name": "bobo-electron",
+  "version": "1.0.0",
+  "description": "波波Electron桌面版",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/yued-fe/bobo-electron",
+  "keywords": [
+    "Electron",
+    "bobo"
+  ],
+  "author": "YUED",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "~1.6.2",
+    "html-minifier": "^3.4.3"
+  }
+}
