@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>波波-静态页面发布辅助工具</title>
+    <link rel="stylesheet" type="text/css" href="http://qidian.gtimg.com/lulu/theme/modern/css/common/ui.css">
+    <link rel="stylesheet" type="text/css" href="http://qidian.gtimg.com/lulu/theme/modern/css/common/animate.css">
+    <link rel="stylesheet" type="text/css" href="main.css">
+  </head>
+  <body>
+    <main class="main">
+      <aside class="aside">
+        <div class="aside-top">
+          <a href="javascript:" id="btnCreateProject" class="ui-button ui-button-warning" role="button">+ 新建项目</a>
+        </div>
+        <ul id="asideUl" class="aside-ul">
+          <!-- <li>
+            <a href="javascript:" class="aside-li-a">故事接龙活动</a>
+          </li>
+          <li>
+            <a href="javascript:" class="aside-li-a active">官网项目页面</a>
+          </li>
+          <li>
+            <a href="javascript:" class="aside-li-a">叶非夜模板专题</a>
+          </li>
+          <li>
+            <a href="javascript:" class="aside-li-a">515活动第一版</a>
+          </li> -->
+        </ul>
+      </aside>
+      <content class="content">
+        <form id="configForm" class="config-form">
+          <h4 class="b di">SVN/Git仓库地址</h4>
+          <p class="f12 gray di ml15">会自动根据tapdid创建文件夹</p>
+          <div class="config-li">
+            <label class="config-label">HTML模板：</label>
+            <div class="config-cell">
+              <input class="ui-input" id="svnPathHTML" name="svn.pathHTML" required="" result="5">
+              <a href="javascript:" class="ui-button ml5 jsFile" role="button">浏览</a>
+            </div>
+          </div>
+          <div class="config-li">
+            <label class="config-label">静态资源：</label>
+            <div class="config-cell">
+              <input class="ui-input" id="svnPathStatic" name="svn.pathStatic"required="" result="5">
+              <a href="javascript:" class="ui-button ml5 jsFile" role="button">浏览</a>
+            </div>
+          </div>
+        <h4>项目统一配置信息</h4>
+          <div class="config-li">
+            <span class="config-label">参与版本控制的静态资源：</span>
+            <div class="config-cell">
+              <input class="ui-input" name="versionFile" value="style.css,script.js">
+            </div>
+          </div>
+          <div class="config-li">
+            <label class="config-label">生成目录：</label>
+            <div class="config-cell">
+              <input class="ui-input" name="build.pathHTML" value="build/" disabled size="8">
+            </div>
+          </div>
+          <div class="config-li">
+            <span class="config-label">路径替换：</span>
+            <div class="config-cell">
+              <h6>上线版本</h6>
+              <p class="mt5 mb15"><input class="ui-input" size="4" value="./" name="pathReplace.build.from" required=""><span class="config-char">→</span><input class="ui-input" id="pathReplaceBuildTo" value="https://qidian.gtimg.com/acts/2017/" name="pathReplace.build.to" required=""></p>
+              <h6>本地版本</h6>
+              <p class="mt5"><input class="ui-input" size="4" value="./" name="pathReplace.public.from" required=""><span class="config-char">→</span><input class="ui-input" value="../../src/" name="pathReplace.public.to" required=""></p>
+            </div> 
+          </div>
+          <div class="config-li">
+            <span class="config-label">协议：</span>
+            <div class="config-cell">
+              <input type="radio" id="protocolHttps" name="protocol" value="https:" checked>
+              <label class="ui-radio" for="protocolHttps"></label><label for="protocolHttps" class="ml5 mr20">https:</label>
+              <input type="radio" id="protocolHttp" name="protocol" value="http:">
+              <label class="ui-radio" for="protocolHttp"></label><label for="protocolHttp" class="ml5">http:</label>
+            </div>
+          </div>
+          <div class="config-li">
+            <span class="config-label">分享：</span>
+            <div class="config-cell">
+              <h6>图片地址</h6>
+              <p class="mt5 mb15">
+                <input type="url" id="wxShareImg" class="ui-input" name="share.img_url">
+                <a href="javascript:" id="btnImgPreview" class="blue ml10">预览</a>
+              </p>
+              <h6>标题</h6>
+              <p class="mt5 mb15">
+                <input class="ui-input" name="share.title">
+              </p>
+              <h6>描述</h6>
+              <p class="mt5 mb15">
+              <textarea class="ui-textarea" rows="2" name="share.desc"></textarea>
+              </p>
+              <h6>页面上的分享按钮选择器（可选）</h6>
+              <p class="mt5">
+                <input class="ui-input" value="#shareBtn" name="shareSelector">
+              </p>
+            </div>
+          </div>
+          <div class="config-li">
+            <label class="config-label">ta统计域名：</label>
+            <div class="config-cell">
+              <select id="taSel" name="domain" style="width:180px;">
+                <option value="">不使用ta统计</option>
+                <option value="activity.book.qq.com">activity.book.qq.com</option>
+                <option value="activity.qidian.com">activity.qidian.com</option>
+                <option value="acts.book.qq.com">acts.book.qq.com</option>
+                <option value="acts.qidian.com" selected>acts.qidian.com</option>
+              </select>
+            </div>
+          </div>
+          <div class="config-li">
+            <span class="config-label mt2">压缩:</span>
+            <div class="config-cell">
+              <p class="">
+                <input type="checkbox" id="compressHtml" checked name="compress.html"><label class="ui-checkbox" for="compressHtml"></label><label for="compressHtml" class="ml5">HTML压缩</label>
+              </p>
+              <div class="mt15">
+                <input type="checkbox" id="compressCl" checked name="compress.className"><label class="ui-checkbox" for="compressCl"></label><label for="compressCl" class="ml5">CSS类名压缩</label>
+                <div class="mt5">
+                  <textarea id="compressClArea" class="ui-textarea" rows="2" name="compress.classIgnore">active, checked, disabled, selected, jpg, png, svg, gif</textarea>
+                  <p class="mt5 gray f12">上面输入框内容为不参与压缩的类名</p>
+                </div> 
+              </div>
+            </div>
+          </div>
+          <!-- 发布执行 -->
+          <div id="configFooter" class="config-footer">
+            <span class="config-label">&nbsp;</span>
+            <div class="config-cell">
+              <input type="submit" class="ui-button ui-button-primary" value="发布页面">
+            </div>
+          </div>
+        </form>
+      </content>
+    </main>
+    <!-- 加载 -->
+    <div id="loading" class="loading ui-loading">
+      <i class="ui-loading-icon"></i>
+    </div>
+  </body>
+
+  <!-- 新建项目的弹框内容 -->
+  <script id="tplDialogCreate" type="text/template">
+    <form>
+      <div class="config-li">
+        <label class="config-label" for="projTapdid">TapdID：</label>
+        <div class="config-cell">
+          <input class="ui-input" id="projTapdid" name="tapdid" size="12" required>
+        </div>
+      </div>
+      <div class="config-li">
+        <label class="config-label" for="projDir">项目目录：</label>
+        <div class="config-cell">
+          <input class="ui-input" name="directory" id="projDir" required>
+          <a href="javascript:" id="localDir" class="ui-button ml5" role="button">浏览</a>
+          <p class="mt5 gray f12">会自动基于TapdID创建文件夹</p>
+        </div>
+      </div>
+      <div class="config-li">
+        <label class="config-label" for="projName">项目名称：</label>
+        <div class="config-cell">
+          <input class="ui-input" id="projName" name="name" maxlength="20" required>
+        </div>
+      </div>
+      <div class="config-li">
+        <label class="config-label">&nbsp;</label>
+        <div class="config-cell">
+          <input type="submit" class="ui-button ui-button-primary" value="确定创建">
+        </div>
+      </div>
+    </form>
+  </script>
+
+  <script src="http://qidian.gtimg.com/c/=/lulu/theme/modern/js/plugin/jquery.js,/lulu/theme/modern/js/common/ui/Select.js,/lulu/theme/modern/js/common/ui/Loading.js,/lulu/theme/modern/js/common/ui/Dialog.js,/lulu/theme/modern/js/common/ui/LightTip.js,/lulu/theme/modern/js/common/ui/Follow.js,/lulu/theme/modern/js/common/ui/ErrorTip.js,/lulu/theme/modern/js/common/ui/Drop.js,/lulu/theme/modern/js/common/ui/Validate.js,/lulu/theme/modern/js/common/ui/Datalist.js"></script>
+
+  <script>
+  window.alert = function (text, type) {
+    new Dialog().alert(text, {
+      title: '提示框'
+    });
+  };
+
+    if (typeof require == 'function') {
+      require('./renderer.js');
+    } else {
+      require = function () { 
+        return {
+          format: function () {},
+          join: function() {},
+          existsSync: function() {},
+          remote: {
+            dialog: function () {}
+          }
+        }; 
+      };
+      document.write('<script src="./renderer.js"><\/script>');
+    }
+  </script>
+</html>
