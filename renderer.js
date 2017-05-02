@@ -325,7 +325,7 @@ var dialog = electron.remote.dialog;
 	      			// 文件夹选择
 	      			$('#localDir').on('click', function () {
 	      				self.showOpenDialog(function (filename) {
-	      					$('#projDir').val(filename);
+	      					$('#projDir').val(filename).trigger('change');
 	      				});
 	      			});
 	        	}
@@ -497,7 +497,8 @@ var dialog = electron.remote.dialog;
   		$('.jsFile').on('click', function () {
   			var elBtn = $(this);
   			self.showOpenDialog(function (filename) {
-  				elBtn.prev('input').val(filename);
+  				elBtn.prev('input').val(filename).trigger('change');
+  				elBtn.parents('form').data('isChanged', true);
   			});
 		});
 
@@ -527,6 +528,9 @@ var dialog = electron.remote.dialog;
 		// 表单提交处理
 		var elForm = $('#configForm');
 
+		// 第一次标记配置
+		elForm.data('isChanged', true);
+
 		elForm.on('change', function () {
 			elForm.data('isChanged', true);
 		});
@@ -539,6 +543,8 @@ var dialog = electron.remote.dialog;
 			} else {
 				// 直接发布
 				self.publish();
+				// 还原状态
+				elForm.data('isChanged', false);
 			}
 		}, {
 			label: true
