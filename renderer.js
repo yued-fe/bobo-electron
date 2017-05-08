@@ -487,6 +487,8 @@ var dialog = electron.remote.dialog;
   				ele.value = value;
   			}
   		});
+
+  		elForm.data('isChanged', true);
   	},
 
   	// 右侧表单元素事件初始化
