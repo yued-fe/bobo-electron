@@ -193,7 +193,8 @@ var dialog = electron.remote.dialog;
 				"activity.book.qq.com": "500438403",
 		        "activity.qidian.com": "500438401",
 				"acts.book.qq.com": "500148454",
-				"acts.qidian.com": "500148453"
+				"acts.qidian.com": "500148453",
+				"acts.readnovel.com": "500438440"
 			},
 			"domain": "acts.qidian.com",
 			"protocol": "https:",
