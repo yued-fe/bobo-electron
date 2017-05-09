@@ -35,7 +35,7 @@
 
 当发生版本升级的时候，无需重新打包，只要替换app文件夹中的资源即可。
 
-windows：\resources\app
+windows：\resources\app<br>
 OS X：显示包内容 → \Contents\Resources\app
 
 千万要注意的是，千万不要清空或删除原来的app文件夹进行替换，采用覆盖的方式，例如其中的project.json是你之前的配置信息，删掉就男默女泪了。
