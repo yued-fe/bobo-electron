@@ -329,6 +329,9 @@ var dialog = electron.remote.dialog;
 	      					$('#projDir').val(filename).trigger('change');
 	      				});
 	      			});
+
+	      			// 项目目录标记
+	        		new Datalist($('#projDir'));
 	        	}
       		});
     	});
@@ -1162,13 +1165,14 @@ var dialog = electron.remote.dialog;
 					    var reg = new RegExp(pathReplaceBuild['from'].replace(/\./g, '\\.').replace(/\//g, '\\/'), 'g');
 					    data = data.replace(reg, pathReplaceBuild['to']);
 
-					    var insertHTML = '';
+					    // 几乎不存在不需要分享的专题，因此，内置
+					    var insertHTML = '<script src="'+ jsonConfig.protocol +'//qidian.gtimg.com/acts/ywurl/ywurl1.0.1.js"></script><script>document.body.onclick = function (event) {event = event || window.event;var target = event.target, bookid = target && target.getAttribute("data-bookid");if (bookid) { var arrBookId = bookid.split(/\\s*,\\s*/); if (arrBookId.length == 2) { ywurl.book({qdId:arrBookId[0],csId:arrBookId[1]}); return false; } }};</script>';
 
 					    if (jsonConfig.share.img_url) {
 					    	self.log(filename + ': 正在写入分享...');
 					    	// 微信分享
 					    	insertHTML = insertHTML + 
-					    	'<script src="'+ jsonConfig.protocol +'//qidian.gtimg.com/acts/ywurl/ywurl1.0.1.js"></script><script>' +
+					    	'<script>' +
 					    	'var config_share = {\
 	    img_url: "'+ jsonConfig.share.img_url +'",\
 	    link: location.href,\
