@@ -22,14 +22,15 @@
 
 ## 使用说明
 
-1. 新建项目<br><img src="https://qidian.qpic.cn/qidian_common/349573/a78f7558e233bd11543a93244fa1ac14/0" width="330" height="176">
-2. 项目创建配置
+1. 向作者索要安装包，免安装，双击即可运行；
+2. 新建项目<br><img src="https://qidian.qpic.cn/qidian_common/349573/a78f7558e233bd11543a93244fa1ac14/0" width="330" height="176">
+3. 项目创建配置
    如果是专题或活动页，可以使用纯数字的tapdid地址，如果是类似招聘官网之类的项目，可以使用类似yuewen之类的关键字作为id<br><img src="https://qidian.qpic.cn/qidian_common/349573/19346266bd9ec2a565478412198c0aca/0" width="557" height="394">
-3. 项目基础配置
+4. 项目基础配置
    项目创建成功后进行基础配置，参数配置说明参见：https://github.com/yued-fe/bobo
-4. 静态页面开发与制作
-5. 点击“发布页面”按钮，对应资源自动会分发到SVN目录，同时会自动添加分享，统计等相关代码，本地亦可预览。
+5. 静态页面开发与制作
+6. 点击“发布页面”按钮，对应资源自动会分发到SVN目录，同时会自动添加分享，统计等相关代码，本地亦可预览。
 
 ## 升级说明
 
-1. 如果下载了新版本，记得把resourse/app文件夹下的project.json文件进行同步，否则之前的项目信息无法同步过来，因为目前尚未走云存储。
+1. 当发生版本升级的时候，无需重新打包，只要替换app文件夹中的资源即可，windows下\resources\app文件夹，OS X 显示包内容\Contents\Resources\app。
