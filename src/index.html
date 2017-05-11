@@ -9,10 +9,13 @@
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-<h1>Hello, BoBo!</h1>
+<!-- 所有内容，包括背景图片，全部都使用一个div包裹，不要使用<body>标签，例如下面的bobo-container，为了和“静静工具”更好适配 -->
+<div class="bobo-container">
+	<h1>Hello, BoBo!</h1>
 
-<!-- 如果一本书同时起点和创世都能访问，data-bookid标记，起点id在前，创世id在后 -->
-<a href="//book.qidian.com/info/1004650252" data-bookid="1004650252,14650252">点击阅读</a>
+	<!-- 如果一本书同时起点和创世都能访问，data-bookid标记，起点id在前，创世id在后 -->
+	<a href="//book.qidian.com/info/1004650252" data-bookid="1004650252,14650252">点击阅读</a>
+</div>
 
 <!-- 如果使用jQuery，地址如下 -->
 <!-- <script src="https://qidian.gtimg.com/yuewen/v1/js/jquery.min.js"></script> -->
