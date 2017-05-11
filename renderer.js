@@ -1015,8 +1015,10 @@ var dialog = electron.remote.dialog;
 
   	// 按照序号返回类名
   	getClassName: function () {
-  		var seedClassName = this.seedClassName;
-  		var indexClassName = this.indexClassName;
+  		var self = this;
+  		
+  		var seedClassName = self.seedClassName;
+  		var indexClassName = self.indexClassName;
 
   		var length = seedClassName.length;
 
