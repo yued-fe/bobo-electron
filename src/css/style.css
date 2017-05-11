@@ -28,3 +28,9 @@ input, textarea, select {
 		-webkit-touch-callout: none;
 	}
 }
+
+.bobo-wrap {
+	font-family: sans-serif;
+	font-size: medium;
+	line-height: 1.5;
+}
