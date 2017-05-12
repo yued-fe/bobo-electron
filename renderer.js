@@ -630,6 +630,10 @@ var dialog = electron.remote.dialog;
 	  			}
 	  		});
 	  		elLog = $('#publishLog');
+
+	  		elLog.delegate('.closeDialog', 'click', function () {
+	  			self.dialogLog.remove();
+	  		});
   		}
 
   		arrLog.push(text);
@@ -1222,10 +1226,10 @@ var dialog = electron.remote.dialog;
 						        	fs.writeFile(pathSVNHTMLMini, minidata, function() {
 						        		self.log('成功到SVN目录：点击<a href="'+ pathSVNHTMLMini +'" class="blue" target="_blank">这里</a>预览！');
 						        		
-						        		self.log('任务完成！');
+						        		self.log('任务完成！<a href="javascript:" class="blue closeDialog">点此</a>关闭弹框。');
 						        	});
 						        } else {
-						        	self.log('任务完成！');
+						        	self.log('任务完成！<a href="javascript:" class="blue closeDialog">点此</a>关闭弹框。');
 						        }				        
 						    });
 				        }
