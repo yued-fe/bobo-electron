@@ -1,6 +1,6 @@
 {
   "name": "bobo-electron",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "波波Electron桌面版",
   "main": "main.js",
   "scripts": {
