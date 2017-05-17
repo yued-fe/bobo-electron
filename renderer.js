@@ -1128,7 +1128,7 @@ var dialog = electron.remote.dialog;
 					    // 类名压缩
 						if (jsonConfig.compress.className == true) {
 							self.log(filename + ': 类名替换中...');
-							data = data.replace(/class="(.*?)"/g, function(matchs, $1) {
+							data = data.replace(/class\s*=\s*"(.*?)"/g, function(matchs, $1) {
 								//console.log($1);
 								return 'class="' + $1.split(' ').map(function(className) {
 									if (self.hashClassName[className]) {
