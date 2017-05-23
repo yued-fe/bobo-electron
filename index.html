@@ -56,7 +56,7 @@
           <div class="config-li">
             <label class="config-label">生成目录：</label>
             <div class="config-cell">
-              <input class="ui-input" name="build.pathHTML" value="build" disabled size="8">
+              <input class="ui-input" name="build.pathHTML" value="build" readonly size="8">
             </div>
           </div>
           <div class="config-li">
@@ -74,7 +74,9 @@
               <input type="radio" id="protocolHttps" name="protocol" value="https:" checked>
               <label class="ui-radio" for="protocolHttps"></label><label for="protocolHttps" class="ml5 mr20">https:</label>
               <input type="radio" id="protocolHttp" name="protocol" value="http:">
-              <label class="ui-radio" for="protocolHttp"></label><label for="protocolHttp" class="ml5">http:</label>
+              <label class="ui-radio" for="protocolHttp"></label><label for="protocolHttp" class="ml5 mr20">http:</label>
+              <input type="radio" id="protocolNull" name="protocol" value="">
+              <label class="ui-radio" for="protocolNull"></label><label for="protocolNull" class="ml5">无协议<span class="gray">（无法本地预览）</span></label>
             </div>
           </div>
           <div class="config-li">

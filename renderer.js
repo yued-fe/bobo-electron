@@ -11,8 +11,12 @@ var url = require('url');
 var minify = require('html-minifier').minify;
 
 var electron = require('electron');
+var remote = electron.remote;
 
-var dialog = electron.remote.dialog;
+var dialog = remote.dialog;
+
+var Menu = remote.Menu;
+var MenuItem = remote.MenuItem;
 
 /*
 ** jsonProject数据结构为：
@@ -82,33 +86,89 @@ var dialog = electron.remote.dialog;
 		}
 
 	    // 读取目录中的所有文件/目录
-	    fs.readdir(src, function (err, paths) {
-	        paths.forEach(function (dir) {
-	            var _src = path.join(src, dir),
-	                _dst = path.join(dst, dir),
-	                readable, writable;        
+	    var paths = fs.readdirSync(src);
 
-	            stat(_src, function (err, st) {
-	                if (err) {
-	                    throw err;
-	                }
+	    paths.forEach(function (dir) {
+            var _src = path.join(src, dir),
+                _dst = path.join(dst, dir),
+                readable, writable;        
 
-	                // 判断是否为文件
-	                if (st.isFile()) {
-	                    // 创建读取流
-	                    readable = fs.createReadStream(_src);
-	                    // 创建写入流
-	                    writable = fs.createWriteStream(_dst);   
-	                    // 通过管道来传输流
-	                    readable.pipe(writable);
-	                } else {
-	                	// 作为文件夹处理
-	                	self.createPath(_dst);
-	                	self.copy(_src, _dst);
-	                }
-	            });
-	        });
-	    });
+            stat(_src, function (err, st) {
+                if (err) {
+                    throw err;
+                }
+
+                // 判断是否为文件
+                if (st.isFile()) {
+                    // 创建读取流
+                    readable = fs.createReadStream(_src);
+                    // 创建写入流
+                    writable = fs.createWriteStream(_dst);   
+                    // 通过管道来传输流
+                    readable.pipe(writable);
+                } else {
+                	// 作为文件夹处理
+                	self.createPath(_dst);
+                	self.copy(_src, _dst);
+                }
+            });
+        });
+	},
+
+	createConfigJSON: function (obj) {
+		var self = this;
+		// 创建脚手架
+		// 根据tapid创建文件夹
+		var dirRoot = obj.directory;
+		var tapdid = obj.tapdid;
+
+		// 目标路径
+		var dirWillCreate = path.join(dirRoot, tapdid);
+		// 先复制src脚手架资源
+		// 1. 创建目标文件夹
+		fs.mkdirSync(path.join(dirWillCreate, 'src'));
+		// 2. 复制
+		this.copy(path.join(__dirname, 'src'), path.join(dirWillCreate, 'src'));
+
+		// 然后创建config.json配置文件，此文件跟着项目走，因为可能多人合作
+		var jsonConfig = {
+			"versionFile": ["style.css", "script.js"],
+			"build": {
+				"pathHTML": "build"
+			},
+			"pathReplace": {
+				"build": {
+					"from": "./",
+					"to": "https://qidian.gtimg.com/acts/"+ new Date().getFullYear() +"/"+ tapdid +"/"
+				},
+				"public": {
+					"from": "./",
+					"to": "../../src/"
+				}
+			},
+			"share": {
+				"img_url": "",
+			    "desc": "分享描述",
+			    "title": "分享标题"
+			},
+			"shareSelector": "#shareBtn",
+			"ta": {
+				"activity.book.qq.com": "500438403",
+		        "activity.qidian.com": "500438401",
+				"acts.book.qq.com": "500148454",
+				"acts.qidian.com": "500148453",
+				"acts.readnovel.com": "500438440"
+			},
+			"domain": "acts.qidian.com",
+			"protocol": "https:",
+			"compress": {
+				"html": true,
+				"className": true,
+				"classIgnore": ["active", "checked", "disabled", "selected", "jpg", "png", "svg", "gif"]
+			}
+		};
+		// 写入config.json文件
+		fs.writeFileSync(path.join(dirWillCreate, 'config.json'), JSON.stringify(jsonConfig));
 	},
 
 	// 保存项目数据
@@ -161,62 +221,81 @@ var dialog = electron.remote.dialog;
 			return;
 		}
 
-		// 先复制src脚手架资源
-		// 1. 创建目标文件夹
-		fs.mkdirSync(path.join(dirWillCreate, 'src'));
-		// 2. 复制
-		this.copy(path.join(__dirname, 'src'), path.join(dirWillCreate, 'src'));
-
-		// 然后创建config.json配置文件，此文件跟着项目走，因为可能多人合作
-		var jsonConfig = {
-			"versionFile": ["style.css", "script.js"],
-			"build": {
-				"pathHTML": "build"
-			},
-			"pathReplace": {
-				"build": {
-					"from": "./",
-					"to": "https://qidian.gtimg.com/acts/"+ new Date().getFullYear() +"/"+ tapdid +"/"
-				},
-				"public": {
-					"from": "./",
-					"to": "../../src/"
-				}
-			},
-			"share": {
-				"img_url": "",
-			    "desc": "分享描述",
-			    "title": "分享标题"
-			},
-			"shareSelector": "#shareBtn",
-			"ta": {
-				"activity.book.qq.com": "500438403",
-		        "activity.qidian.com": "500438401",
-				"acts.book.qq.com": "500148454",
-				"acts.qidian.com": "500148453",
-				"acts.readnovel.com": "500438440"
-			},
-			"domain": "acts.qidian.com",
-			"protocol": "https:",
-			"compress": {
-				"html": true,
-				"className": true,
-				"classIgnore": ["active", "checked", "disabled", "selected", "jpg", "png", "svg", "gif"]
-			}
-		};
-		// 写入config.json文件
-		fs.writeFileSync(path.join(dirWillCreate, 'config.json'), JSON.stringify(jsonConfig));
-
+		// 写入config JSON数据
+		this.createConfigJSON(obj);
+		
 		// 新的项目数据插入
 		jsonProject.push(obj);
 		
 		// 写入项目配置数据
-		fs.writeFile(dir, JSON.stringify(jsonProject), function (err) {
+		fs.writeFile(dir, JSON.stringify(jsonProject), function () {
 			// 然后要把config公用配置带到项目中
-			if (err) {
-				throw err;
-			}
+			// 成功回调
+			callback();
 
+			// 在全局存储新的项目数据
+			self.jsonProject = jsonProject;
+			// 刷新左侧数据
+			self.htmlProjectList();	
+		});
+	},
+
+	// 编辑项目
+	editProject: function (arr, callback) {
+		var self = this;
+		callback = callback || function () {};
+		// 文件路径
+		var dir = this.dataStoreDir;
+		// 数据
+		var jsonProject = this.jsonProject;
+
+		// 求得当前匹配的左侧项目数据，
+		// 然后进行替换
+		// 先把arr转换成直接的键值对象
+		var obj = {};
+		arr.forEach(function (keyValue) {
+			obj[keyValue.name] = keyValue.value;
+		});
+
+		var dirBefore = '';
+
+		// 然后根据tapdid进行匹配
+		jsonProject.forEach(function (objProject) {
+			delete objProject.selected;
+
+			if (objProject.tapdid == obj.tapdid) {
+				// 编辑哪个，让哪个当前选中
+				objProject.selected = true;
+				// 之前的文件夹目录地址
+				dirBefore = objProject.directory;
+				// 进行替换
+				for (var key in obj) {
+					objProject[key] = obj[key];
+				}
+			}
+		});
+
+		// 目录转移
+		// 创建脚手架
+		// 根据tapid创建文件夹
+		var dirRoot = obj.directory;
+		var tapdid = obj.tapdid;
+
+		// 目标路径
+		var dirWillCreate = path.join(dirRoot, tapdid);
+
+		// 创建该文件夹
+		this.createPath(dirWillCreate);
+
+		// 如果是空文件夹，移花接木
+		if (fs.readdirSync(dirWillCreate).length === 0) {
+			this.copy(path.join(dirBefore, tapdid), dirWillCreate);
+		}
+
+		// 重新写入并刷新
+		// 写入项目配置数据
+		fs.writeFile(dir, JSON.stringify(jsonProject), function () {
+			// 然后要把config公用配置带到项目中
 			// 成功回调
 			callback();
 
@@ -267,12 +346,15 @@ var dialog = electron.remote.dialog;
 		var html = '';
 		if (jsonProject && jsonProject.length) {
 			$.each(jsonProject, function (index, obj) {
-				html = html + '<li><a href="javascript:" id="tapdid_'+ obj.tapdid +'" class="aside-li-a'+ (obj.selected? " active": "") +'" title="'+ obj.name +'">'+ obj.name +'</a></li>';
+				html = html + '<li><a href="javascript:" id="tapdid_'+ obj.tapdid +'" class="aside-li-a'+ (obj.selected? " active": "") +'" title="'+ obj.name +'">'+ obj.name +'</a><a href="javascript:" class="jsProEdit aside-li-a-icon" title="编辑" data-id="'+ obj.tapdid +'" aria-label="编辑" role="button"><svg class="icon"><use xlink:href="#icon-edit"></use></svg></a></li>';
 			});
 		}
 
 		$('#asideUl').html(html);
 		$('#loading').hide();
+
+		// tips提示
+	    $('#asideUl .jsProEdit').tips();
 
 		// 右侧表单数据初始化
 		this.initFormData();
@@ -335,6 +417,68 @@ var dialog = electron.remote.dialog;
 	        	}
       		});
     	});
+ 	},
+
+ 	// 编辑项目
+ 	eventEditProject: function () {
+ 		var self = this;
+
+ 		// 需要的一些元素
+ 		var elUl = $('#asideUl');
+ 		var elTplCreate = $('#tplDialogCreate');
+
+ 		elUl.delegate('.jsProEdit', 'click', function () {
+ 			var tapdid = $(this).attr('data-id');
+
+ 			var dialogEdit = new Dialog({
+	        	title: '创建项目',
+	        	content: elTplCreate.html(),
+	        	width: 550,
+	        	onShow: function () {
+	          		var elForm = this.el.body.find('form');
+	          		var elSubmit = elForm.find('input[type="submit"]');
+	          		var elDir = $('#projDir');
+
+	          		$('#projTapdid').val(tapdid).attr('readonly', 'readonly');
+
+	          		var jsonProject = self.jsonProject;
+
+	          		// 根据jsonProject数据获得当前tapdid对应的数据
+	          		// jsonProject是个对象数组，因此
+	          		var dataEdit = jsonProject.filter(function (obj) {
+	          			return obj.tapdid == tapdid;
+	          		})[0];
+
+	          		elDir.val(dataEdit.directory || '');
+	          		$('#projName').val(dataEdit.name || '');
+
+	          		// 验证
+	          		new Validate(elForm, function() {
+	            		// 验证成功之后
+	            		// 本地塞数据
+	            		var data = elForm.serializeArray();
+
+	            		elSubmit.loading();
+
+	            		self.editProject(data, function () {
+	            			// 写入成功后
+	            			// 弹框关闭
+	            			dialogEdit.remove();
+	            		});
+	          		});
+
+	      			// 文件夹选择
+	      			$('#localDir').on('click', function () {
+	      				self.showOpenDialog(function (filename) {
+	      					elDir.val(filename).trigger('change');
+	      				});
+	      			});
+
+	      			// 项目目录标记
+	        		new Datalist(elDir);
+	        	}
+      		});
+ 		});
  	},
 
   	// 右侧项目提交按钮的居底固定处理
@@ -511,8 +655,9 @@ var dialog = electron.remote.dialog;
 		// 协议切换和同步
 		var elPathReplaceBuildTo = $('#pathReplaceBuildTo'), elWxShareImg = $('#wxShareImg');
 		$('input[name="protocol"]').on('click', function () {
-			elPathReplaceBuildTo.val(elPathReplaceBuildTo.val().replace(/(^[a-z]+:)\/\//, this.value + '//'));
-			elWxShareImg.val(elWxShareImg.val().replace(/(^[a-z]+:)\/\//, this.value + '//'));
+			elPathReplaceBuildTo.val(elPathReplaceBuildTo.val().replace(/(^[a-z]+:)?\/\//, this.value + '//'));
+			// 微信分享不能无协议
+			elWxShareImg.val(elWxShareImg.val().replace(/(^[a-z]+:)?\/\//, (this.value || 'https:') + '//'));
 		});
 		elWxShareImg.on('blur', function () {
 			$('input[name="protocol"]:checked').trigger('click');
@@ -1172,7 +1317,7 @@ var dialog = electron.remote.dialog;
 					    data = data.replace(reg, pathReplaceBuild['to']);
 
 					    // 几乎不存在不需要分享的专题，因此，内置
-					    var insertHTML = '<script src="'+ jsonConfig.protocol +'//qidian.gtimg.com/acts/ywurl/ywurl1.0.1.js"></script><script>document.body.onclick = function (event) {event = event || window.event;var target = event.target, bookid = target && target.getAttribute("data-bookid");if (bookid) { var arrBookId = bookid.split(/\\s*,\\s*/); if (arrBookId.length == 2) { ywurl.book({qdId:arrBookId[0],csId:arrBookId[1]}); return false; } }};</script>';
+					    var insertHTML = '<script src="'+ jsonConfig.protocol +'//qidian.gtimg.com/acts/ywurl/ywurl1.0.1.js"></script><script>document.body.onclick=function(c){c=c||window.event;var e=c.target;var a=function(h){if(!h){return null}var g=h.tagName.toLowerCase();if(g=="a"){return h}else{if(g=="body"){return null}else{return a(h.parentNode)}}};var d=a(e);var b=d&&d.getAttribute("data-bookid");if(b&&window.ywurl){var f=b.split(/\\s*,\\s*/);if(f.length==2){ywurl.book({qdId:f[0],csId:f[1]});return false}}};</script>';
 
 					    if (jsonConfig.share.img_url) {
 					    	self.log(filename + ': 正在写入分享...');
@@ -1239,11 +1384,61 @@ var dialog = electron.remote.dialog;
 		});
   	},
 
+  	svg: function () {
+  		var urlSVG = path.join(__dirname, 'symbol-defs.svg');
+
+  		var htmlSVG = fs.readFileSync(urlSVG, {
+	    	encoding: 'utf8'
+	    });
+
+	    // 插入到页面
+	    if (htmlSVG) {
+	    	document.body.insertAdjacentHTML('afterbegin', htmlSVG);
+	    }
+  	},
+
+  	contextmenu: function () {
+  		var menu = new Menu();
+
+  		menu.append(new MenuItem({
+			label: '剪切',
+			role: 'cut'
+		}));
+		menu.append(new MenuItem({
+			label: '复制',
+			role: 'copy'
+		}));
+		menu.append(new MenuItem({
+			label: '粘贴',
+			role: 'paste'
+		}));
+		menu.append(new MenuItem({
+			label: '全选',
+			role: 'selectall'
+		}));
+		menu.append(new MenuItem({type: 'separator'}));
+		menu.append(new MenuItem({
+			label: '刷新',
+			role: 'reload'
+		}));
+		menu.append(new MenuItem({
+			label: '强刷',
+			role: 'forcereload'
+		}));
+
+		window.addEventListener('contextmenu', function (event) {
+			event.preventDefault();
+		  	menu.popup(remote.getCurrentWindow());
+		}, false)
+  	},
+
   	init: function () {
 	    this.eventFooterFixed();
 
 	    // 新建项目
 	    this.eventCreateProject();
+	    // 编辑项目
+	    this.eventEditProject();
 
 	    // 右侧表单初始化
 	    this.initFormElements();
@@ -1253,5 +1448,11 @@ var dialog = electron.remote.dialog;
 
 	    // 左侧项目切换交互
 	    this.eventAside();
-  	}
+
+	    // 图标
+	    this.svg();
+
+	    // 右键上下文
+	    this.contextmenu();
+  	}  	
 }).init();  

@@ -147,6 +147,13 @@ input:disabled,textarea:disabled {
 	display: none;
 }
 
+svg.icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+}
+
 /* 样式 */
 .main,body,html {
 	height: 100%;
@@ -171,6 +178,9 @@ input:disabled,textarea:disabled {
 .aside-ul {
 	margin-top: 10px;
 }
+.aside-ul li {
+	position: relative;
+}
 .aside-li-a {
 	display: block;
 	padding: 9px 20px;
@@ -189,6 +199,16 @@ input:disabled,textarea:disabled {
 	margin-left: -10px;
 	margin-top: 6px;
 }
+.aside-li-a-icon {
+	position: absolute;
+	top: 9px; right: 9px;
+	opacity: 0;
+}
+li:hover .aside-li-a-icon,
+.aside-li-a-icon:focus {
+	opacity: 1;
+}
+
 
 .config-form {
 	padding: 20px 20px 60px;
