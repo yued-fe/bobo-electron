@@ -1439,7 +1439,7 @@ var MenuItem = remote.MenuItem;
   		success = success || function () {};
   		error = error || function () {};
 
-  		var url = 'https://raw.githubusercontent.com/yued-fe/bobo-electron/master/' + filepath;
+  		var url = 'https://raw.githubusercontent.com/yued-fe/bobo-electron/master/' + filepath + '?r=' + Math.random();
 
   		https.get(url, function (res) {
   			var statusCode = res.statusCode;
