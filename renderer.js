@@ -1602,6 +1602,11 @@ var MenuItem = remote.MenuItem;
 		    					progress(20);
 		    				}
 
+		    				// 建立以版本号为名称的临时文件夹
+	    					if (!fs.existsSync(dirUpdate)) {
+	    						fs.mkdirSync(dirUpdate);
+	    					}
+
 		    				// 之前已经获得，直接写入
 		    				if (filepath == 'package.json') {
 		    					// 写入文件
@@ -1616,10 +1621,6 @@ var MenuItem = remote.MenuItem;
 
 		    				// 获取文件内容
 		    				self.getHttpsData(filepath, function (data) {
-		    					// 建立以版本号为名称的临时文件夹
-		    					if (!fs.existsSync(dirUpdate)) {
-		    						fs.mkdirSync(dirUpdate);
-		    					}
 		    					// 如果更新文件路径较深，例如'src/css/style.css'
 		    					var arrFilepath = filepath.split('/');
 		    					if (arrFilepath.length > 1) {
