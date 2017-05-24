@@ -247,9 +247,26 @@ label.config-label {
 	border-top: 1px solid #d0d0d5;
 	background-color: #fff;
 	bottom: 0;
+	position: relative;
 }
 .config-footer.fixed {
 	position: fixed;
+	left: 200px; right: 0;
+	padding-left: 20px;
+}
+
+.config-detect {
+	position: absolute;
+	right: 20px; top: 20px;
+	font-size: 12px;
+	color: #a2a9b6;
+}
+.config-detect .icon-sync {
+	margin-right: 5px;
+	animation: spin 1s infinite linear;
+}
+.config-detect .ui-button {
+	margin: -10px 0 0 10px;
 }
 
 .loading {
@@ -257,6 +274,7 @@ label.config-label {
 	top: 0; right: 0; bottom: 0; left: 0;
 	background-color: hsla(0,100%,100%,.75);
 	z-index: 9;
+	display: none;
 }
 
 .publish-log {
@@ -265,4 +283,21 @@ label.config-label {
 	border: 1px solid #d0d0d5;
 	background-color: #fff;
 	overflow: auto;
+}
+
+.update-log {
+	margin-top: 20px;
+	padding-left: 22px;
+	list-style-type: decimal;
+}
+
+.update-progress {
+	padding-top: 1px;
+	position: absolute;
+	left: 0; right: 0; top: -1px;
+	background: linear-gradient(to right, #f4615c, #f28c48 33%, #01cf97 66%, #00a5e0);
+	clip-path: polygon(0 0);
+}
+.update-progress[style] {
+	transition: clip-path .25s;
 }

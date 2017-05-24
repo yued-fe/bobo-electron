@@ -8,6 +8,8 @@ stat = fs.stat;
 var path = require('path');
 var url = require('url');
 
+var https = require('https');
+
 var minify = require('html-minifier').minify;
 
 var electron = require('electron');
@@ -1432,6 +1434,244 @@ var MenuItem = remote.MenuItem;
 		}, false)
   	},
 
+  	getHttpsData: function (filepath, success, error) {
+  		// 回调缺省时候的处理
+  		success = success || function () {};
+  		error = error || function () {};
+
+  		var url = 'https://raw.githubusercontent.com/yued-fe/bobo-electron/master/' + filepath;
+
+  		https.get(url, function (res) {
+  			var statusCode = res.statusCode;
+
+  			if (statusCode !== 200) {
+  				$.lightTip.error(filepath + '获取失败，错误码' + statusCode);
+  				// 出错回调
+    			error();
+    			// 消耗响应数据以释放内存
+    			res.resume();
+    			return;
+  			}
+
+  			res.setEncoding('utf8');
+  			var rawData = '';
+		  	res.on('data', function (chunk) {
+		    	rawData += chunk;
+		  	});
+
+		  	// 请求结束
+		  	res.on('end', function () {
+			    success(rawData);
+			}).on('error', function (e) {
+			  	$.lightTip.error('发生错误：' + e.message);
+  				// 出错回调
+    			error();
+			});
+		});
+  	},
+
+  	updateDetect: function () {
+  		var self = this;
+
+  		var elDetect = $('#configDetect');
+  		// 出错时候的统一处理
+  		var errorDetect = function () {
+  			elDetect.html('<span class="red">检测失败</span>');
+  		};
+
+  		// 0.0.00这种版本转换为可直接比较的内容
+  		String.prototype.version = function () {
+  			return this.split('.').map(function (seed) {
+		    	if (seed.length == 1) {
+		    		seed = '0' + seed;
+		    	}
+		    	return seed;
+		    }).join('');
+  		};
+
+  		// 1. 获取github远程的package.json数据
+  		self.getHttpsData('package.json', function (strJSONRemotePackage) {
+  			// string to JSON
+  			try {
+		      	var jsonRemotePackage = JSON.parse(strJSONRemotePackage);
+		    } catch (e) {
+		      	$.lightTip.error('远程package.json解析异常：' + e.message);
+		      	errorDetect();
+		      	return;
+		    }
+
+		    // 读取本地
+		    var pathLocalPackage = path.join(__dirname, 'package.json');
+	  		// 对比本地版本和线上版本
+	  		var strJSONLocalPackage = fs.readFileSync(pathLocalPackage, 'utf8');
+	  		// string to JSON
+  			try {
+		      	var jsonLocalPackage = JSON.parse(strJSONLocalPackage);
+		    } catch (e) {
+		      	$.lightTip.error('本地package.json解析异常：' + e.message);
+		      	errorDetect();
+		      	return;
+		    }
+
+		    // 版本比对
+		    var versionLocal = jsonLocalPackage.version;
+		    var versionRemote = jsonRemotePackage.version;
+
+		    if (versionLocal.version() < versionRemote.version()) {
+		    	// 求得当前对应版本的一些数据（升级文件序列，升级描述）
+		    	var manifest = jsonRemotePackage.manifest;
+		    	var objTargetVersion = null;
+		    	manifest.forEach(function (obj) {
+	    			if (obj.version == versionRemote) {
+	    				objTargetVersion = obj;
+	    			}
+	    		});
+
+	    		if (!objTargetVersion) {
+	    			elDetect.html('信息异常，当前版本v'+ versionLocal +'无法升级');
+	    			return;
+	    		}
+
+		    	elDetect.html('<span id="updateInfo">可升级到v'+ versionLocal +'（<a href="javascript:" id="newVersionView" class="blue">新版功能</a>）</span><a href="javascript:" id="newVersionGet" class="ui-button ui-button-warning" role="button">升级</a>');
+
+		    	// 事件-查看新版功能
+		    	$('#newVersionView').on('click', function () {
+		    		var htmlDialogVersion = '<p class="update-log-v"><strong>已装：</strong>v'+ versionLocal +'<strong class="ml20">升级：</strong><span class="orange">v'+ versionRemote +'</span></p>';
+		    		// 获取升级版本的detail详细信息
+		    		var arrDetail = objTargetVersion.detail;
+
+		    		if (arrDetail.length == 0) {
+		    			arrDetail = ['修复一些已知的问题'];
+		    		}
+
+	    			htmlDialogVersion = htmlDialogVersion + '<ol class="update-log">' + arrDetail.map(function (text) {
+	    				return '<li>'+ text +'</li>';
+	    			}).join('') + '</ol>';
+
+	    			// 弹框
+	    			new Dialog({
+	    				title: '新版功能',
+	    				content: htmlDialogVersion,
+	    				width: 440,
+	    				buttons: [{}]
+	    			});
+		    	});
+
+		    	// 事件-升级
+		    	var elProgress = $('#updateProgress');
+		    	// 详细升级信息提示
+		    	var elInfo = $('#updateInfo');
+		    	// 临时文件夹目录
+		    	var dirUpdate = path.join(__dirname, versionRemote);
+		    	// 点击升级按钮
+		    	$('#newVersionGet').on('click', function () {
+		    		var elBtn = $(this);
+		    		if (elBtn.isLoading()) {
+		    			return;
+		    		}
+
+		    		var arrFile = objTargetVersion.file;
+
+		    		// package.json是必须的
+		    		if (arrFile.indexOf('package.json') == -1) {
+		    			arrFile.unshift('package.json');
+		    		}
+
+		    		// 文件个数，进度条长度
+		    		var length = arrFile.length;
+		    		var width = elProgress.width();
+
+		    		var start = 0;
+
+		    		var progress = function (widthProgress) {
+		    			var percent = start / length;
+		    			var widthProgress = widthProgress || width * percent;
+		    			elProgress.css('clip-path', 'polygon(0 0, '+ widthProgress +'px 0, '+ widthProgress +'px 1px, 0 1px)');
+		    		};
+
+		    		var step = function () {
+		    			var filepath = arrFile[start];
+		    			if (filepath) {
+		    				filepath = filepath.replace(/^\.\//, '');
+
+		    				// 升级信息更新
+		    				elInfo.html(filepath + '获取中...');
+
+		    				// 进度条跟上
+		    				if (start == 0) {
+		    					progress(20);
+		    				}
+
+		    				// 之前已经获得，直接写入
+		    				if (filepath == 'package.json') {
+		    					// 写入文件
+		    					fs.writeFileSync(path.join(dirUpdate, filepath), strJSONRemotePackage);
+		    					// 进度更新
+		    					start++;
+		    					progress();
+		    					// 下一个文件
+		    					step();
+		    					return;
+		    				}
+
+		    				// 获取文件内容
+		    				self.getHttpsData(filepath, function (data) {
+		    					// 建立以版本号为名称的临时文件夹
+		    					if (!fs.existsSync(dirUpdate)) {
+		    						fs.mkdirSync(dirUpdate);
+		    					}
+		    					// 如果更新文件路径较深，例如'src/css/style.css'
+		    					var arrFilepath = filepath.split('/');
+		    					if (arrFilepath.length > 1) {
+		    						arrFilepath.pop();
+		    						// 深度创建文件资源
+		    						self.createPath(path.join(dirUpdate,  arrFilepath.join('/')));
+		    					}
+		    					// 写入文件
+		    					fs.writeFileSync(path.join(dirUpdate, filepath), data);
+		    					// 进度更新
+		    					start++;
+		    					progress();
+		    					// 下一个文件
+		    					step();
+		    				}, function () {
+		    					elInfo.html('<span class="red">'+ filepath + '获取失败</span>');
+		    					// 按钮状态还原
+		    					elBtn.html('重试').unloading();
+		    					// 进度还原
+		    					elProgress.removeAttr('style');
+		    				});
+		    			} else {
+		    				elInfo.html('资源全部获取完毕，更新中...');
+		    				// 认为近似结束了
+		    				progress(width - 20);
+		    				// 最后20px进度是用来资源覆盖
+
+		    				self.copy(path.join(__dirname, dirUpdate), path.join(__dirname, ''));
+
+		    				progress(width);
+
+		    				setTimeout(function () {
+		    					elInfo.html('<span class="green">升级成功，重载中...</span>');
+		    					location.reload();
+		    				}, 250);
+		    			}
+		    		};
+
+		    		elBtn.loading();
+
+		    		step();
+		    	});
+
+		    } else {
+		    	elDetect.html('当前v'+ versionLocal +'已经是最新版本');
+		    	setTimeout(function () {
+		    		elDetect.html('v' + versionLocal);
+		    	}, 3000);
+		    }
+  		}, errorDetect);		
+  	},
+
   	init: function () {
 	    this.eventFooterFixed();
 
@@ -1454,5 +1694,8 @@ var MenuItem = remote.MenuItem;
 
 	    // 右键上下文
 	    this.contextmenu();
+
+	    // 版本检测
+	    this.updateDetect();
   	}  	
 }).init();  

@@ -134,7 +134,12 @@
             <span class="config-label">&nbsp;</span>
             <div class="config-cell">
               <input type="submit" class="ui-button ui-button-primary" value="发布页面">
+              <!-- 更新检测 -->
+              <div id="configDetect" class="config-detect">
+                <svg class="icon icon-sync"><use xlink:href="#icon-sync"></use></svg>正在检测更新...
+              </div>
             </div>
+            <i id="updateProgress" class="update-progress"></i>
           </div>
         </form>
       </content>
