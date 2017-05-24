@@ -1648,7 +1648,7 @@ var MenuItem = remote.MenuItem;
 		    				progress(width - 20);
 		    				// 最后20px进度是用来资源覆盖
 
-		    				self.copy(path.join(__dirname, dirUpdate), path.join(__dirname, ''));
+		    				self.copy(dirUpdate, __dirname);
 
 		    				progress(width);
 
