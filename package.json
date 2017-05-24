@@ -1,6 +1,11 @@
 {
   "name": "bobo-electron",
-  "version": "1.1.1",
+  "version": "1.2.0",
+  "manifest": [{
+      "version": "1.2.0",
+      "file": ["lulu.js", "index.html", "main.css", "renderer.js", "symbol-defs.svg"],
+      "detail": ["新增项目编辑功能", "增加右键复制剪切粘贴功能", "修复起点、创世书籍分发跳转的一个bug", "支持版本检测与更新"]
+  }],
   "description": "波波Electron桌面版",
   "main": "main.js",
   "scripts": {
