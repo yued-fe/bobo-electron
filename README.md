@@ -8,7 +8,7 @@
 6. 开发目录更加简洁，除了一个config.json配置文件外，其他都是开发文件内容，更加友好！
 
 ## 下载
-Mac: https://github.com/yued-fe/bobo/raw/master/electron/bobo-darwin-x64.zip
+Mac: https://github.com/yued-fe/bobo/raw/master/electron/bobo-darwin-x64.zip<br>
 Win: https://github.com/yued-fe/bobo/raw/master/electron/bobo-win32-x64.zip
 
 ## 开发说明
