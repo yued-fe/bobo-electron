@@ -433,7 +433,7 @@ var MenuItem = remote.MenuItem;
  			var tapdid = $(this).attr('data-id');
 
  			var dialogEdit = new Dialog({
-	        	title: '创建项目',
+	        	title: '编辑项目',
 	        	content: elTplCreate.html(),
 	        	width: 550,
 	        	onShow: function () {
@@ -475,6 +475,8 @@ var MenuItem = remote.MenuItem;
 	      					elDir.val(filename).trigger('change');
 	      				});
 	      			});
+
+	      			elSubmit.val('确认修改');
 
 	      			// 项目目录标记
 	        		new Datalist(elDir);
