@@ -1532,7 +1532,7 @@ var MenuItem = remote.MenuItem;
 	    			return;
 	    		}
 
-		    	elDetect.html('<span id="updateInfo">可升级到v'+ versionLocal +'（<a href="javascript:" id="newVersionView" class="blue">新版功能</a>）</span><a href="javascript:" id="newVersionGet" class="ui-button ui-button-warning" role="button">升级</a>');
+		    	elDetect.html('<span id="updateInfo">可升级到v'+ versionRemote +'（<a href="javascript:" id="newVersionView" class="blue">新版功能</a>）</span><a href="javascript:" id="newVersionGet" class="ui-button ui-button-warning" role="button">升级</a>');
 
 		    	// 事件-查看新版功能
 		    	$('#newVersionView').on('click', function () {
