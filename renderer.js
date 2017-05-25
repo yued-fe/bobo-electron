@@ -1321,7 +1321,7 @@ var MenuItem = remote.MenuItem;
 					    data = data.replace(reg, pathReplaceBuild['to']);
 
 					    // 几乎不存在不需要分享的专题，因此，内置
-					    var insertHTML = '<script src="'+ jsonConfig.protocol +'//qidian.gtimg.com/acts/ywurl/ywurl1.0.1.js"></script><script>document.body.onclick=function(c){c=c||window.event;var e=c.target;var a=function(h){if(!h){return null}var g=h.tagName.toLowerCase();if(g=="a"){return h}else{if(g=="body"){return null}else{return a(h.parentNode)}}};var d=a(e);var b=d&&d.getAttribute("data-bookid");if(b&&window.ywurl){var f=b.split(/\\s*,\\s*/);if(f.length==2){ywurl.book({qdId:f[0],csId:f[1]});return false}}};</script>';
+					    var insertHTML = '<script src="'+ jsonConfig.protocol +'//qidian.gtimg.com/acts/ywurl/ywurl1.0.1.js"></script><script>document.body.onclick=function(event){event=event||window.event;var target=event.target;var getParentA=function(ele){if(!ele){return null}var targetName=ele.tagName.toLowerCase();if(targetName=="a"){return ele}else{if(targetName=="body"){return null}else{return getParentA(ele.parentNode)}}};var targetA=getParentA(target);var bookid=targetA&&targetA.getAttribute("data-bookid");if(bookid&&window.ywurl){var arrBookId=bookid.split(/\\s*,\\s*/);if(arrBookId.length==2){ywurl.book({qdId:arrBookId[0],csId:arrBookId[1]});return false}}};</script>';
 
 					    if (jsonConfig.share.img_url) {
 					    	self.log(filename + ': 正在写入分享...');
@@ -1572,12 +1572,25 @@ var MenuItem = remote.MenuItem;
 		    			return;
 		    		}
 
-		    		var arrFile = objTargetVersion.file;
+		    		// 这里有一个稍稍复杂的逻辑处理，就是
+		    		// 升级文件的合并
+		    		// 用户可能升级的时候，一次性跨度多个版本
+		    		// a版本升级7个文件
+		    		// b版本就只需要升级1个文件
+		    		// 如果只按照最新的b版本升级，就会出现问题
+		    		// 因此，需要遍历出本地版本和线上版本之间的所有文件内容
+		    		// 首先，package.json是必须的
+		    		var arrFile = ['package.json'];
 
-		    		// package.json是必须的
-		    		if (arrFile.indexOf('package.json') == -1) {
-		    			arrFile.unshift('package.json');
-		    		}
+		    		manifest.forEach(function (obj) {
+		    			if (obj.version && obj.version.version() > versionLocal.version()) {
+		    				obj.file.forEach(function (filepath) {
+		    					if (arrFile.indexOf(filepath) == -1) {
+		    						arrFile.push(filepath);
+		    					}
+		    				});
+		    			}
+		    		});
 
 		    		// 文件个数，进度条长度
 		    		var length = arrFile.length;
