@@ -15,7 +15,10 @@
 	<h1>Hello, BoBo!</h1>
 
 	<!-- 如果一本书同时起点和创世都能访问，data-bookid标记，起点id在前，创世id在后 -->
-	<a href="//book.qidian.com/info/1004650252" data-bookid="1004650252,14650252">点击阅读</a>
+	<p><a href="//book.qidian.com/info/1004650252" data-bookid="1004650252,14650252">点击阅读</a></p>
+
+    <!-- app内分享呼起功能，需要一个专门的分享按钮，波波发布时候会自动注入JS根据设备remove掉hidden属性 -->
+    <p><a href="javascript:" id="shareBtn" hidden="">分享</a></p>
 </div>
 
 <!-- 如果使用jQuery，地址如下 -->

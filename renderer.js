@@ -1338,6 +1338,7 @@ var MenuItem = remote.MenuItem;
 							var eleShareBtns = document.querySelectorAll("'+ jsonConfig.shareSelector +'");\
 	if(eleShareBtns.length && (ywurl.uA == ywurl.platforms.iosApp || ywurl.uA == ywurl.platforms.androidApp)){\
 		[].slice.call(eleShareBtns).forEach(function(ele) {\
+			ele.removeAttribute("hidden");\
 			ele.addEventListener("click", function () { ywurl.yuewenShare.share(config_share); });\
 		});\
 	}else{ ywurl.yuewenShare.setShareConfig(config_share); }' +

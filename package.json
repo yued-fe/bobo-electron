@@ -1,6 +1,6 @@
 {
   "name": "bobo-electron",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "manifest": [{
       "version": "1.2.0",
       "file": ["lulu.js", "index.html", "main.css", "renderer.js", "symbol-defs.svg"],
@@ -9,6 +9,9 @@
       "version": "1.2.1",
       "file": ["lulu.js", "index.html", "renderer.js"],
       "detail": ["修复Datalist失效问题", "自动升级机制更健壮"]
+  }, {
+      "version": "1.2.2",
+      "file": ["renderer.js", "src/index.html", "src/css/style.css"],
   }],
   "description": "波波Electron桌面版",
   "main": "main.js",
