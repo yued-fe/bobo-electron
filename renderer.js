@@ -901,8 +901,8 @@ var MenuItem = remote.MenuItem;
 		var dirProject = path.join(dirRoot, tapdid, 'src');
 
   		// 如果目录最后一层就是当前tapdid，则不新建，否则，根据tapdid先创建文件夹
-  		var arrLastDirHTML = dirSVNHTML.replace(/\w$/, '').split(/\/|\\/);
-  		var arrLastDirStatic = dirSVNStatic.replace(/\w$/, '').split(/\/|\\/);
+  		var arrLastDirHTML = dirSVNHTML.replace(/\W$/, '').split(/\/|\\/);
+  		var arrLastDirStatic = dirSVNStatic.replace(/\W$/, '').split(/\/|\\/);
 
   		if (arrLastDirHTML[arrLastDirHTML.length - 1] !== tapdid) {
   			self.log('创建SVN模板资源文件夹...');

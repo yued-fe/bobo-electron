@@ -13,6 +13,10 @@
       "version": "1.2.2",
       "file": ["renderer.js", "src/index.html", "src/css/style.css"],
       "detail": ["App内分享按钮智能显示", "内置响应式rem开发CSS代码"]
+  }, {
+      "version": "1.2.3",
+      "file": ["renderer.js", "src/css/style.css"],
+      "detail": ["修复每次SVN地址都会多一层tapid的问题", "增加img元素的css reset兼容低版本IE"]
   }],
   "description": "波波Electron桌面版",
   "main": "main.js",
