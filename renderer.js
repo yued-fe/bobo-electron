@@ -1349,10 +1349,21 @@ var MenuItem = remote.MenuItem;
 					    if (jsonConfig.domain && jsonConfig.ta[jsonConfig.domain]) {
 					    	self.log(filename + ': 正在写入ta统计...');
 					    	insertHTML = insertHTML + '<script>var _mtac = {};(function() {var mta = document.createElement("script");mta.src = "'+ jsonConfig.protocol +'//pingjs.qq.com/h5/stats.js?v2.0.4";mta.setAttribute("name", "MTAH5");mta.setAttribute("sid", "'+ jsonConfig.ta[jsonConfig.domain] +'");var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(mta, s);})();</script>';
+					    } else if (jsonConfig.domain == 'acts.webnovel.com') {
+					    	// 海外版，使用ga统计
+					    	self.log(filename + ': 正在写入ga统计...');
+
+					    	insertHTML = '<script>/* ga统计 */</script>';
+
+					    	// 同时lang标记为en
+					    	data = data.replace('<html>', '<html lang="en">');
 					    }
 
 					    // 插入在页面底部
 					    data = data.replace('</body>', insertHTML + '</body>');
+
+					    // 过滤不必要的CSS
+					    data = data.replace('<style>.bobo-share{display:inline-block;}</style>', '');
 
 					    // 开始压缩
 					    if (jsonConfig.compress.html) {

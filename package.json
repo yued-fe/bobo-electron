@@ -17,6 +17,10 @@
       "version": "1.2.3",
       "file": ["renderer.js", "src/css/style.css"],
       "detail": ["修复每次SVN地址都会多一层tapid的问题", "增加img元素的css reset兼容低版本IE"]
+  }, {
+      "version": "1.2.4",
+      "file": ["renderer.js", "index.html", "src/index.html", "src/css/style.css"],
+      "detail": ["增加动态模块等文档说明", "增加对海外版页面的支持"]
   }],
   "description": "波波Electron桌面版",
   "main": "main.js",
