@@ -61,3 +61,22 @@ input, textarea, select {
 	font-family: sans-serif;
 	line-height: 1.5;
 }
+
+/* 脚手架页面示意CSS，纯演示，实际开发需删除 */
+.bobo-header { 
+	padding: 1%;
+	background-color: #141414;
+	color: #fff;
+}
+.bobo-share {
+	color: #fff;
+	position: absolute;
+	top: 5px; right: 10px;
+}
+.bobo-footer {
+	background-color: #141414;
+	color: #fff;
+	text-align: center;
+	line-height: 20px;
+	padding: 20px 1em;
+}

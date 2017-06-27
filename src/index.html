@@ -10,15 +10,108 @@
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-<!-- 所有内容，包括背景图片，全部都使用一个div包裹，不要使用<body>标签，例如下面的bobo-wrap，为了和“静静工具”更好适配 -->
+<!-- 
+<style>
+    /* 
+     * 静静可识别的全局变量设置，
+     * 通常用在动态模块中，
+     * 如果使用该技术，则20%占比左右的IE浏览器需要使用安全色渐进兼容 
+    */
+    :root  {
+        --全局高亮色: #aa8d29;
+    }
+</style>
+-->
+<!-- 所有内容，包括背景图片，使用<div>包裹，不要使用<body>标签，例如下面的bobo-wrap，为了和“静静工具”更好适配 -->
 <div class="bobo-wrap">
-	<h1>Hello, BoBo!</h1>
+    <div class="bobo-header">
+        <h1>你好，Bobo!</h1>
+        <!-- 
+            1. app内分享呼起功能需要一个专门的分享按钮，默认为选择器是#shareBtn的元素，可配置；
+            2. 下面一行内联CSS和按钮上的hidden属性都需要保留，最终效果为：仅在本地开发，静静和app中才会显示分享按钮。
+              原理为：
+              a. 波波发布页面会对类名进行压缩，因此，下面一行内联CSS是无效的，只在本地开发有效；
+              b. 静静对#shareBtn选择器做了display属性重置；
+              c. 波波发布时候会注入一段JS代码，识别是否是app设备，如果是，会remove掉hidden属性使分享按钮显示。
+         -->
+        <style type="text/css">.bobo-share{display:inline-block;}</style>
+        <!-- 理论上，只有支持微信分享的页面，这个都需要保留，默认定位在页面右上角 -->
+        <a href="javascript:" id="shareBtn" hidden="" class="bobo-share">分享</a>
+    </div>
 
-	<!-- 如果一本书同时起点和创世都能访问，data-bookid标记，起点id在前，创世id在后 -->
-	<p><a href="//book.qidian.com/info/1004650252" data-bookid="1004650252,14650252">点击阅读</a></p>
+	<!-- 
+        1. 如果一本书同时起点和创世都能访问，data-bookid标记，起点id在前，创世id在后；
+        2. 如果会在静静中使用，则data-bookid可以缺省，直接在静静中设置即可。
+    
+        <a href="//book.qidian.com/info/1004650252" data-bookid="1004650252,14650252">点击阅读</a>
+    -->
+    
+    <!--  
+        如果当前页面会作为模版在静静中使用，则开发时候有以下一些注意点：
+        1. 注意标签语义化，例如<p>为多行文本，<span>为单行文本，<li>标签是可以复制和删除的等；
+        2. 当父元素有背景或者为<li>列表的时候，注意需要预留可鼠标相应的区域，否则静静无法选中，例如可以使用padding撑开间距，而不是使用margin；
+        3. 对于交互，如果效果和颜色之类的有关联，处理技巧和平时会有所不同，例如下面的选项卡交互处理：
+    
+        <x-bobo-tab>
+            <ul id="boboTab" class="bobo-tab">
+                <li class="active">选项1</li>
+                <li>选项2</li>
+                <li>选项3</li>
+            </ul>
+            <div id="boboPanel">
+                <div>面板1</div>
+                <div>面板2</div>
+                <div>面板3</div>
+                <div>面板4-备用</div>
+                <div>面板5-备用</div>
+            </div>
+        </x-bobo-tab>
 
-    <!-- app内分享呼起功能，需要一个专门的分享按钮，波波发布时候会自动注入JS根据设备remove掉hidden属性 -->
-    <p><a href="javascript:" id="shareBtn" hidden="">分享</a></p>
+        <script>
+            // 交互要点示意
+            var elBoboTab = $('#boboTab');
+            var elBoboPanels = $('#boboPanel > div');
+            
+            // 只能走委托
+            elBoboTab.delegate('li', 'click', function () {
+               var elBoboTabs = elBoboTab.find('li');
+               // 获得高亮色
+               var highlightColor = elBoboTab.find('.active').css('color');
+               // 获得普通色
+               var defaultColor = elBoboTab.find('li:not(.active)').eq(0).css('color');
+
+               // 选项卡状态变化
+               elBoboTabs.removeClass('active').css('color', defaultColor);
+               $(this).addClass('active').css('color', highlightColor);
+
+               // 面板对应变化
+               elBoboPanels.hide();
+               elBoboPanels.eq(elBoboTabs.index(this)).show();
+            });
+        </script>
+
+           交互要点在于每次点击选项卡元素，都把.active类名所在元素作为高亮色，其他作为普通色，同时和面板元素进行对应匹配。因为在静静中，会改变.active元素的高亮色，也会复制选项卡为4个或5个。
+
+        4. JS中不要出现和样式直接关联的类名，使用id或者设定JS专业类名。如果实在有UI状态变化，请使用.active, .checked, .selected之类的状态类名，波波默认不对这些类名进行压缩。
+    -->
+    
+    <!-- 
+        1. 如果有不确定的占位模块，可以使用空的placeholder标签：
+
+        <placeholder></placeholder>
+
+        2. 如果是动态可配置模块，也需要使用placeholder标签，但是相关脚本或者模板（如果有）需要放在placeholder标签里面，例如：
+
+        <placeholder> 
+            <table><thead><tr><th>标题1</th><th>标题2</th></tr></thead></table>
+            <script src="./js/table.inc.js" name="TABlE_LIST" data-id="234345"></script> 
+        </placeholder>
+    -->    
+
+    <!-- 底部 -->
+    <div class="bobo-footer">
+        <p>Copyright © 2017 All Rights Reserved 阅文集团 版权所有</p>
+    </div>
 </div>
 
 <!-- 如果使用jQuery，地址如下 -->
@@ -27,6 +120,7 @@
 <!-- 如果使用Zepto地址为 -->
 <!-- <script src="https://qidian.gtimg.com/yuewen/v1/js/zepto.min.js"></script> -->
 
+<!-- 这是JS脚本地址，如果JS简单，亦可以直接内联实现，加载速度会更快，更新也更方便 -->
 <script src="./js/script.js"></script>
 </body>
 </html>
