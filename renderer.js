@@ -1617,9 +1617,33 @@ var MenuItem = remote.MenuItem;
 		    		};
 
 		    		var step = function () {
-		    			var filepath = arrFile[start];
+		    			var filepath = arrFile[start], action = 'modify';
 		    			if (filepath) {
+		    				var splitFilepath = filepath.split('|');
+		    				if (splitFilepath.length == 2) {
+		    					action = splitFilepath[0];
+		    					filepath = splitFilepath[1];
+		    				}
+
 		    				filepath = filepath.replace(/^\.\//, '');
+
+		    				if (action == 'deleted') {
+		    					// 删除
+		    					// 操作信息更新
+		    					elInfo.html(filepath + '删除中...');
+
+		    					if (fs.existsSync(filepath)) {
+		    						fs.unlinkSync(filepath);
+		    					}
+
+		    					// 进度更新
+		    					start++;
+		    					progress();
+		    					// 下一个文件
+		    					step();
+		    					
+		    					return;
+		    				}
 
 		    				// 升级信息更新
 		    				elInfo.html(filepath + '获取中...');
