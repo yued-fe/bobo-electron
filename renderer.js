@@ -117,6 +117,38 @@ var MenuItem = remote.MenuItem;
         });
 	},
 
+	/*
+	 * 删除目录中的所有文件包括子目录
+	 * @param{ String } 需要删除的目录
+	 */
+	del: function (src) {
+		var self = this;
+
+		if (!fs.existsSync(src)) {
+			return;
+		}
+
+		// 读取目录中的所有文件/目录
+	    var paths = fs.readdirSync(src);
+
+	    paths.forEach(function (dir) {
+	    	var _src = path.join(src, dir);
+
+	    	st = fs.statSync(_src);
+
+	    	if (st.isFile()) {
+            	// 如果是文件，则删除
+            	fs.unlinkSync(_src);
+            } else {
+            	// 作为文件夹
+        		self.del(_src);
+        	}
+	    });
+
+	    // 删除文件夹
+	    fs.rmdirSync(src);
+	},
+
 	createConfigJSON: function (obj) {
 		var self = this;
 		// 创建脚手架
@@ -154,13 +186,6 @@ var MenuItem = remote.MenuItem;
 			    "title": "分享标题"
 			},
 			"shareSelector": "#shareBtn",
-			"ta": {
-				"activity.book.qq.com": "500438403",
-		        "activity.qidian.com": "500438401",
-				"acts.book.qq.com": "500148454",
-				"acts.qidian.com": "500148453",
-				"acts.readnovel.com": "500438440"
-			},
 			"domain": "acts.qidian.com",
 			"protocol": "https:",
 			"compress": {
@@ -308,6 +333,70 @@ var MenuItem = remote.MenuItem;
 		});
 	},
 
+	// 删除项目
+	deleteProject: function (params, callback) {
+		var self = this;
+		callback = callback || function () {};
+		// project.json文件路径
+		var dir = this.dataStoreDir;
+		// 数据
+		var jsonProject = this.jsonProject;
+
+		// tapdid
+		var tapdid = params && params.tapdid;
+		if (!tapdid) {
+			return;
+		}
+		// 布尔类型
+		var isDelDir = params.delDir;
+
+		// 需要删除的文件夹目录地址
+		var dirWillBeDel = '', indexObjDelete = -1;
+		// 删除后的jsonProject
+		var jsonProjectAfterDel = [];
+
+		// 然后根据tapdid进行匹配并删除
+		jsonProject.forEach(function (objProject, index) {
+			delete objProject.selected;
+
+			if (objProject.tapdid == tapdid) {
+				// 需要删除的文件夹目录地址
+				dirWillBeDel = objProject.directory;
+				indexObjDelete = index;
+			} else {
+				jsonProjectAfterDel.push(objProject);
+			}
+		});
+
+		// 删除项目最近的一个项目选中
+		if (jsonProjectAfterDel.length) {
+			if (!jsonProjectAfterDel[indexObjDelete]) {
+				indexObjDelete--;
+			}
+			jsonProjectAfterDel[indexObjDelete].selected = true;
+		}
+		
+		if (isDelDir == true) {
+			// 删除目标文件夹
+			// 目标路径
+			var dirWillDelete = path.join(dirWillBeDel, tapdid);
+			self.del(dirWillDelete);
+		}
+
+		// 重新写入并刷新
+		// 写入项目配置数据
+		fs.writeFile(dir, JSON.stringify(jsonProjectAfterDel), function () {
+			// 然后要把config公用配置带到项目中
+			// 成功回调
+			callback();
+
+			// 在全局存储新的项目数据
+			self.jsonProject = jsonProjectAfterDel;
+			// 刷新左侧数据
+			self.htmlProjectList();	
+		});
+	},
+
 	// 获取项目数据
 	getProject: function () {
 		var self = this;
@@ -348,7 +437,7 @@ var MenuItem = remote.MenuItem;
 		var html = '';
 		if (jsonProject && jsonProject.length) {
 			$.each(jsonProject, function (index, obj) {
-				html = html + '<li><a href="javascript:" id="tapdid_'+ obj.tapdid +'" class="aside-li-a'+ (obj.selected? " active": "") +'" title="'+ obj.name +'">'+ obj.name +'</a><a href="javascript:" class="jsProEdit aside-li-a-icon" title="编辑" data-id="'+ obj.tapdid +'" aria-label="编辑" role="button"><svg class="icon"><use xlink:href="#icon-edit"></use></svg></a></li>';
+				html = html + '<li><a href="javascript:" id="tapdid_'+ obj.tapdid +'" class="aside-li-a'+ (obj.selected? " active": "") +'" title="'+ obj.name +'">'+ obj.name +'</a><a href="javascript:" class="jsProEdit aside-li-a-icon" title="编辑" data-id="'+ obj.tapdid +'" aria-label="编辑" role="button"><svg class="icon"><use xlink:href="#icon-edit"></use></svg></a><a href="javascript:" class="jsProDelete aside-li-a-icon" title="删除" data-id="'+ obj.tapdid +'" aria-label="删除" role="button"><svg class="icon"><use xlink:href="#icon-delete"></use></svg></a></li>';
 			});
 		}
 
@@ -357,6 +446,7 @@ var MenuItem = remote.MenuItem;
 
 		// tips提示
 	    $('#asideUl .jsProEdit').tips();
+	    $('#asideUl .jsProDelete').tips();
 
 		// 右侧表单数据初始化
 		this.initFormData();
@@ -482,6 +572,42 @@ var MenuItem = remote.MenuItem;
 	        		new Datalist(elDir);
 	        	}
       		});
+ 		});
+ 	},
+
+ 	// 删除项目
+ 	eventDeleteProject: function () {
+ 		var self = this;
+
+ 		// 需要的一些元素
+ 		var elUl = $('#asideUl');
+
+ 		elUl.delegate('.jsProDelete', 'click', function () {
+ 			var tapdid = $(this).attr('data-id');
+
+ 			// 警示确认框
+ 			var htmlConfirm = '确定删除此项目？<p class="mt10"><input type="checkbox" id="chkDelPro" class="clip"><label class="ui-checkbox" for="chkDelPro"></label><label class="ml5" for="chkDelPro">同时删除开发目录所有资源</label></p>';
+ 			var dialogDeleteConfirm = new Dialog().confirm(htmlConfirm, {
+ 				buttons: [{
+ 					value: '删除',
+ 					events: {
+ 						click: function () {
+ 							var elBtn = $(this);
+ 							// 加载状态
+ 							elBtn.loading();
+ 							// 执行删除
+ 							self.deleteProject({
+ 								tapdid: tapdid,
+ 								delDir: $('#chkDelPro').prop('checked')
+ 							}, function () {
+ 								$.lightTip.success('删除成功');
+		            			// 删除完毕后关闭弹框
+		            			dialogDeleteConfirm.remove();
+		            		});
+ 						}
+ 					}
+ 				}, {}]
+ 			});
  		});
  	},
 
@@ -1344,11 +1470,19 @@ var MenuItem = remote.MenuItem;
 	}else{ ywurl.yuewenShare.setShareConfig(config_share); }' +
 							'</script>';
 					    }
-
 					    // ta统计
-					    if (jsonConfig.domain && jsonConfig.ta[jsonConfig.domain]) {
+					    var strTa = '{\
+	"activity.book.qq.com": "500438403",\
+    "activity.qidian.com": "500438401",\
+	"acts.book.qq.com": "500148454",\
+	"acts.qidian.com": "500148453",\
+	"acts.readnovel.com": "500438440"\
+}';
+					    var ta = JSON.parse(strTa);
+
+					    if (jsonConfig.domain && ta[jsonConfig.domain]) {
 					    	self.log(filename + ': 正在写入ta统计...');
-					    	insertHTML = insertHTML + '<script>var _mtac = {};(function() {var mta = document.createElement("script");mta.src = "'+ jsonConfig.protocol +'//pingjs.qq.com/h5/stats.js?v2.0.4";mta.setAttribute("name", "MTAH5");mta.setAttribute("sid", "'+ jsonConfig.ta[jsonConfig.domain] +'");var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(mta, s);})();</script>';
+					    	insertHTML = insertHTML + '<script>var _mtac = {};(function() {var _mta_id = '+ strTa +';var mta = document.createElement("script");mta.src = "'+ jsonConfig.protocol +'//pingjs.qq.com/h5/stats.js?v2.0.4";mta.setAttribute("name", "MTAH5");mta.setAttribute("sid", _mta_id[location.hostname] || _mta_id["'+ jsonConfig.domain +'"]);var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(mta, s);})();</script>';
 					    } else if (jsonConfig.domain == 'acts.webnovel.com') {
 					    	// 海外版，使用ga统计
 					    	self.log(filename + ': 正在写入ga统计...');
@@ -1366,34 +1500,35 @@ var MenuItem = remote.MenuItem;
 					    data = data.replace('<style>.bobo-share{display:inline-block;}</style>', '');
 
 					    // 开始压缩
+					    var minidata = data;
 					    if (jsonConfig.compress.html) {
 				        	self.log(filename + ': 开始创建压缩版本');
 
-					        var minidata = minify(data, {
+					        minidata = minify(data, {
 						    	removeComments: true,
 						    	collapseWhitespace: true,
-						    	minifyJS:true, 
-						    	minifyCSS:true
+						    	minifyJS: true, 
+						    	minifyCSS: true
 						    });
+					    }
 
-					        // 根目录最终发布HTML生成
-					        var pathHTMLMini = path.join(dirRoot, tapdid, jsonConfig.build.pathHTML, filename);
-					        var pathSVNHTMLMini = path.join(dirSVNHTML, filename);
+				        // 根目录最终发布HTML生成
+				        var pathHTMLMini = path.join(dirRoot, tapdid, jsonConfig.build.pathHTML, filename);
+				        var pathSVNHTMLMini = path.join(dirSVNHTML, filename);
 
-						    fs.writeFile(pathHTMLMini, minidata, function() {
-						        self.log(filename + ': 压缩成功，点击<a href="'+ pathHTMLMini +'" class="blue" target="_blank">这里</a>预览！');
-						        // svn目录转移
-						        if (dirSVNHTML) {
-						        	fs.writeFile(pathSVNHTMLMini, minidata, function() {
-						        		self.log('成功到SVN目录：点击<a href="'+ pathSVNHTMLMini +'" class="blue" target="_blank">这里</a>预览！');
-						        		
-						        		self.log('任务完成！<a href="javascript:" class="blue closeDialog">点此</a>关闭弹框。');
-						        	});
-						        } else {
-						        	self.log('任务完成！<a href="javascript:" class="blue closeDialog">点此</a>关闭弹框。');
-						        }				        
-						    });
-				        }
+					    fs.writeFile(pathHTMLMini, minidata, function() {
+					        self.log(filename + ': 上线版本生成成功，点击<a href="'+ pathHTMLMini +'" class="blue" target="_blank">这里</a>预览！');
+					        // svn目录转移
+					        if (dirSVNHTML) {
+					        	fs.writeFile(pathSVNHTMLMini, minidata, function() {
+					        		self.log('成功到SVN目录：点击<a href="'+ pathSVNHTMLMini +'" class="blue" target="_blank">这里</a>预览！');
+					        		
+					        		self.log('任务完成！<a href="javascript:" class="blue closeDialog">点此</a>关闭弹框。');
+					        	});
+					        } else {
+					        	self.log('任务完成！<a href="javascript:" class="blue closeDialog">点此</a>关闭弹框。');
+					        }				        
+					    });
 					});
 		    	}
 		    });
@@ -1731,6 +1866,8 @@ var MenuItem = remote.MenuItem;
 	    this.eventCreateProject();
 	    // 编辑项目
 	    this.eventEditProject();
+	    // 删除项目
+	    this.eventDeleteProject();
 
 	    // 右侧表单初始化
 	    this.initFormElements();

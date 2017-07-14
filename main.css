@@ -183,7 +183,7 @@ svg.icon {
 }
 .aside-li-a {
 	display: block;
-	padding: 9px 20px;
+	padding: 9px 40px 9px 20px;
 }
 .aside-li-a:hover {
 	background-color: #f2fcff;
@@ -201,14 +201,16 @@ svg.icon {
 }
 .aside-li-a-icon {
 	position: absolute;
-	top: 9px; right: 9px;
+	top: 9px; right: 29px;
 	opacity: 0;
 }
 li:hover .aside-li-a-icon,
 .aside-li-a-icon:focus {
 	opacity: 1;
 }
-
+.aside-li-a-icon + .aside-li-a-icon {
+	right: 9px;
+}
 
 .config-form {
 	padding: 20px 20px 60px;

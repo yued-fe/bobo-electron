@@ -194,6 +194,10 @@
     });
   };
 
-  require('./renderer.js');
+  if (typeof require == 'function') {
+    require('./renderer.js');
+  } else {
+    document.write('<script src="renderer.js"><\/script>');
+  }
   </script>
 </html>
