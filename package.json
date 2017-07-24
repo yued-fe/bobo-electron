@@ -1,6 +1,6 @@
 {
   "name": "bobo-electron",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "manifest": [{
       "version": "1.2.0",
       "file": ["lulu.js", "index.html", "main.css", "renderer.js", "symbol-defs.svg"],
@@ -25,6 +25,10 @@
       "version": "1.2.5",
       "file": ["renderer.js", "index.html", "main.css"],
       "detail": ["增加项目删除功能", "统计代码优先基于当前域名确定", "修复不勾选压缩不生成线上模板的问题", "海外版增加ga统计"]
+  }, {
+      "version": "1.2.6",
+      "file": ["renderer.js", "index.html"],
+      "detail": ["增加小说阅读和红袖的域名统计", "统计代码增加cid属性"]
   }],
   "description": "波波Electron桌面版",
   "main": "main.js",

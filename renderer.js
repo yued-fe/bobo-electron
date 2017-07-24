@@ -1470,19 +1470,21 @@ var MenuItem = remote.MenuItem;
 	}else{ ywurl.yuewenShare.setShareConfig(config_share); }' +
 							'</script>';
 					    }
-					    // ta统计
+					    // ta统计 sid和cid
 					    var strTa = '{\
-	"activity.book.qq.com": "500438403",\
-    "activity.qidian.com": "500438401",\
-	"acts.book.qq.com": "500148454",\
-	"acts.qidian.com": "500148453",\
-	"acts.readnovel.com": "500438440"\
+	"activity.book.qq.com": {"sid": "500438403", "cid": "500459757"},\
+    "activity.qidian.com": {"sid": "500438401", "cid": "500459756"},\
+	"acts.book.qq.com": {"sid": "500148454", "cid": "500458485"},\
+	"acts.qidian.com": {"sid": "500148453", "cid": "500459755"},\
+	"acts.readnovel.com": {"sid": "500438440", "cid": "500459754"},\
+	"acts.xs8.cn": {"sid": "500494197", "cid": "500494297"},\
+	"acts.hongxiu.com": {"sid": "500494201", "cid": "500494299"}\
 }';
 					    var ta = JSON.parse(strTa);
 
 					    if (jsonConfig.domain && ta[jsonConfig.domain]) {
 					    	self.log(filename + ': 正在写入ta统计...');
-					    	insertHTML = insertHTML + '<script>var _mtac = {};(function() {var _mta_id = '+ strTa +';var mta = document.createElement("script");mta.src = "'+ jsonConfig.protocol +'//pingjs.qq.com/h5/stats.js?v2.0.4";mta.setAttribute("name", "MTAH5");mta.setAttribute("sid", _mta_id[location.hostname] || _mta_id["'+ jsonConfig.domain +'"]);var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(mta, s);})();</script>';
+					    	insertHTML = insertHTML + '<script id="MTA">var _mtac = {};(function() {var _mta_id = '+ strTa +';var mta = document.createElement("script");mta.src = "'+ jsonConfig.protocol +'//pingjs.qq.com/h5/stats.js?v2.0.4";mta.setAttribute("name", "MTAH5");var sid_cid = _mta_id[location.hostname] || _mta_id["'+ jsonConfig.domain +'"] || {};mta.setAttribute("sid", sid_cid.sid || "");mta.setAttribute("cid", sid_cid.cid || "");var s = document.getElementById("MTA") || document.getElementsByTagName("script")[0];s.parentNode.insertBefore(mta, s);})();</script>';
 					    } else if (jsonConfig.domain == 'acts.webnovel.com') {
 					    	// 海外版，使用ga统计
 					    	self.log(filename + ': 正在写入ga统计...');
