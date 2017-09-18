@@ -1,6 +1,6 @@
 {
   "name": "bobo-electron",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "manifest": [{
       "version": "1.2.0",
       "file": ["lulu.js", "index.html", "main.css", "renderer.js", "symbol-defs.svg"],
@@ -29,6 +29,10 @@
       "version": "1.2.6",
       "file": ["renderer.js", "index.html"],
       "detail": ["增加小说阅读和红袖的域名统计", "统计代码增加cid属性"]
+  }, {
+      "version": "1.2.7",
+      "file": ["src/index.html"],
+      "detail": ["架手架页面底部版权年份变成动态", "增加转义HTML标签字符的说明"]
   }],
   "description": "波波Electron桌面版",
   "main": "main.js",

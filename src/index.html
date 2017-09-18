@@ -93,6 +93,8 @@
            交互要点在于每次点击选项卡元素，都把.active类名所在元素作为高亮色，其他作为普通色，同时和面板元素进行对应匹配。因为在静静中，会改变.active元素的高亮色，也会复制选项卡为4个或5个。
 
         4. JS中不要出现和样式直接关联的类名，使用id或者设定JS专业类名。如果实在有UI状态变化，请使用.active, .checked, .selected之类的状态类名，波波默认不对这些类名进行压缩。
+
+        5. 特殊字符，例如'<'或者''>'请转移为安全的表示，如'&lt;'和'&gt;'，否则会HTML压缩可能会出现异常。
     -->
     
     <!-- 
@@ -104,13 +106,14 @@
 
         <placeholder> 
             <table><thead><tr><th>标题1</th><th>标题2</th></tr></thead></table>
-            <script src="./js/table.inc.js" name="TABlE_LIST" data-id="234345"></script> 
+            <script src="./js/table.inc.js" name="TABlE_LIST" data-id="234345"></script>
         </placeholder>
-    -->    
+    -->
 
     <!-- 底部 -->
     <div class="bobo-footer">
-        <p>Copyright © 2017 All Rights Reserved 阅文集团 版权所有</p>
+        <p>Copyright © <span id="footYear">2017</span> All Rights Reserved 阅文集团 版权所有</p>
+        <script>document.getElementById('footYear').innerHTML = new Date().getFullYear();</script>
     </div>
 </div>
 
