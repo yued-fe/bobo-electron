@@ -1,0 +1,86 @@
+@charset 'UTF-8';
+
+/*
+$dark = #141414;
+$ss = sans-serif;
+ */
+body, p, h1, h2, h3, h4, h5, h6, ul, dl, ol, dd, form {
+	m0;
+}
+ul, ol {
+	list-style: none;
+	p0;
+}
+
+a {
+	c ih;
+	tdn;
+}
+
+img {
+	bd0;
+}
+
+h1, h2, h3, h4, h5, h6, input, textarea, select {
+	f100%;
+}
+input, textarea, select {
+	ff ih;
+}
+
+@media screen and (max-width: 1024px) {
+	body {
+		-webkit-tap-highlight-color:rgba(0,0,0,0);
+		-webkit-user-select: none;
+		-webkit-text-size-adjust: none;
+		-webkit-touch-callout: none;
+	}
+}
+
+[hidden] {
+	dn;
+}
+
+/* 如果是移动端页面，需要使用rem单位，可以放开下面注释，无需JS，?px/16进行转换，例如20px=1.25rem */
+/*@media screen and (min-width: 375px) {
+    html {
+        f calc(100% + 2 * (100vw - 375px) / 39);
+        f calc(16px + 2 * (100vw - 375px) / 39);
+    }
+}
+@media screen and (min-width: 414px) {
+    html {
+        f calc(112.5% + 4 * (100vw - 414px) / 586);
+        f calc(18px + 4 * (100vw - 414px) / 586);
+    }
+}
+@media screen and (min-width: 1000px) {
+    html {
+        f calc(137.5% + 6 * (100vw - 1000px) / 1000);
+        f calc(22px + 6 * (100vw - 1000px) / 1000);
+    }
+}*/
+
+.bobo-wrap {
+	ff ss;
+	lh1.5;
+}
+
+/* 脚手架页面示意CSS，纯演示，实际开发需删除 */
+.bobo-header {
+	p1%;
+	bgc dark;
+	c#fff;
+}
+.bobo-share {
+	c#fff;
+	abs;
+	top5; right10;
+}
+.bobo-footer {
+	bgc dark;
+	c#fff;
+	tc;
+	lh20;
+	p20 1em;
+}

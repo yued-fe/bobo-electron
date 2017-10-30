@@ -33,6 +33,10 @@
       "version": "1.2.7",
       "file": ["src/index.html"],
       "detail": ["架手架页面底部版权年份变成动态", "增加转义HTML标签字符的说明"]
+  }, {
+      "version": "1.2.8",
+      "file": ["src/run.js", "src/qcss/style.qcss", "src/css/style.css"],
+      "detail": ["增加CSS快捷书写功能"]
   }],
   "description": "波波Electron桌面版",
   "main": "main.js",
