@@ -145,7 +145,7 @@ let qCss = function (src, dist) {
 			        });
 			      });
 
-			      let dataReplace = data.replace( /\{([\w\W]*?)\}/g, function (matchs, $1) {
+			      let dataReplace = data.replace(/\{([\w\W]*?)\}/g, function (matchs, $1) {
 			      	let space = '    ';
 			        let prefix = '{\n' + space, suffix = '\n}';
 			        // 查询语句处理
@@ -197,7 +197,11 @@ let qCss = function (src, dist) {
 			            return key + value.trim();
 			          });
 			        }).join(';\n' + space).trim() + suffix;
-			      });
+			      }).replace(/\w\{/g, function (matchs) {
+              return matchs.replace('{', ' {');
+            }).replace(/\}(\.|#|\:|\[|\w)/g, function (matchs) {
+              return matchs.replace('}', '}\n');
+            });
 
 		        // 于是生成新的CSS文件
 		        let newFilename = filename.replace('.qcss', '.css');
