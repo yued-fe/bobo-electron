@@ -100,6 +100,7 @@ let qCss = function (src, dist) {
     tsl: 'transition: ',
     bs: 'box-shadow: ',
     ts: 'text-shadow: ',
+    con: 'content: ',
     center: 'position: absolute; top: 0; bottom: 0; right: 0; left: 0; margin: auto',
     ell: 'text-overflow: ellipsis; white-space: nowrap; overflow: hidden',
     clip: 'position: absolute; clip: rect(0 0 0 0)'
@@ -178,7 +179,7 @@ let qCss = function (src, dist) {
 			                // 数值自动加px单位
 			                if (key == 'lh' && parts < 5) {
 			                	return parts;
-			                } else if (/^(?:zx|op|z|fw)$/.test(key) == false && parts != '0') {
+			                } else if (/^(?:zx|op|z|fw)$/.test(key) == false && parts != '0' && /^calc/.test(value.trim()) == false) {
 			                  parts = parts + 'px';
 			                }
 			              } else if (key == 'tsl') {
