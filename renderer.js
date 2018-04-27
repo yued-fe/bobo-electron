@@ -1447,7 +1447,7 @@ var MenuItem = remote.MenuItem;
                         data = data.replace(reg, pathReplaceBuild['to']);
 
                         // 几乎不存在不需要分享的专题，因此，内置
-                        var insertHTML = '<script src="'+ jsonConfig.protocol +'//qidian.gtimg.com/acts/ywurl/ywurl1.0.1.js"></script><script>document.body.onclick=function(event){event=event||window.event;var target=event.target;var getParentA=function(ele){if(!ele){return null}var targetName=ele.tagName.toLowerCase();if(targetName=="a"){return ele}else{if(targetName=="body"){return null}else{return getParentA(ele.parentNode)}}};var targetA=getParentA(target);var bookid=targetA&&targetA.getAttribute("data-bookid");if(bookid&&window.ywurl){var arrBookId=bookid.split(/\\s*,\\s*/);if(arrBookId.length==2){ywurl.book({qdId:arrBookId[0],csId:arrBookId[1]});return false}}};</script>';
+                        var insertHTML = '<script src="'+ jsonConfig.protocol +'//qidian.gtimg.com/acts/ywurl/ywurl1.0.17.js"></script><script>document.body.onclick=function(event){event=event||window.event;var target=event.target;var getParentA=function(ele){if(!ele){return null}var targetName=ele.tagName.toLowerCase();if(targetName=="a"){return ele}else{if(targetName=="body"){return null}else{return getParentA(ele.parentNode)}}};var targetA=getParentA(target);var bookid=targetA&&targetA.getAttribute("data-bookid");if(bookid&&window.ywurl){var arrBookId=bookid.split(/\\s*,\\s*/);if(arrBookId.length==2){ywurl.book({qdId:arrBookId[0],csId:arrBookId[1]});return false}}};</script>';
 
                         if (jsonConfig.share.img_url) {
                             self.log(filename + ': 正在写入分享...');
