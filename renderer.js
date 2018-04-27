@@ -1509,6 +1509,7 @@ var MenuItem = remote.MenuItem;
                             minidata = minify(data, {
                                 removeComments: true,
                                 collapseWhitespace: true,
+                                conservativeCollapse: true,
                                 minifyJS: true,
                                 minifyCSS: true
                             });

@@ -37,6 +37,10 @@
       "version": "1.2.8",
       "file": ["src/run.js", "src/qcss/style.qcss", "src/css/style.css"],
       "detail": ["增加CSS快捷书写功能"]
+  }, {
+      "version": "1.2.9",
+      "file": ["renderer.js", "src/run.js"],
+      "detail": ["HTML压缩空格不完全剔除", "QCSS功能模块采用在线加载方式"]
   }],
   "description": "波波Electron桌面版",
   "main": "main.js",
