@@ -13,7 +13,7 @@ Win: https://github.com/yued-fe/bobo/raw/master/electron/bobo-win32-x64.zip
 
 也可以网盘下载（推荐）
 
-Mac: 链接: http://pan.baidu.com/s/1pLsfOmf 密码: wykf<br>
+Mac: 链接: http://pan.baidu.com/s/1pLsfOmf 密码: wykf  （**需要安装在应用程序目录下**）<br>
 Win: 链接: http://pan.baidu.com/s/1bFWCnO 密码: 8e4d
 
 ## 使用说明
