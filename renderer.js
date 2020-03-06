@@ -1479,7 +1479,8 @@ var MenuItem = remote.MenuItem;
     "acts.readnovel.com": {"sid": "500438440", "cid": "500459754"},\
     "acts.xs8.cn": {"sid": "500494197", "cid": "500494297"},\
     "acts.hongxiu.com": {"sid": "500494201", "cid": "500494299"},\
-    "acts.yuewen.com": {"sid": "500637754", "cid": ""}\
+    "acts.yuewen.com": {"sid": "500637754", "cid": ""},\
+    "activity.write.qq.com": {"sid": "500505539", "cid": "500505540"}\
 }';
                         var ta = JSON.parse(strTa);
 

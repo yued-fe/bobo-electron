@@ -1,6 +1,6 @@
 {
   "name": "bobo-electron",
-  "version": "1.2.10",
+  "version": "1.2.11",
   "manifest": [{
       "version": "1.2.0",
       "file": ["lulu.js", "index.html", "main.css", "renderer.js", "symbol-defs.svg"],
@@ -35,16 +35,20 @@
       "detail": ["架手架页面底部版权年份变成动态", "增加转义HTML标签字符的说明"]
   }, {
       "version": "1.2.8",
-      "file": ["src/run.js", "src/qcss/style.qcss", "src/css/style.css"],
-      "detail": ["增加CSS快捷书写功能"]
+      "file": [],
+      "detail": ["增加CSS快捷书写功能【已撤销】"]
   }, {
       "version": "1.2.9",
-      "file": ["renderer.js", "src/run.js"],
-      "detail": ["HTML压缩空格不完全剔除", "QCSS功能模块采用在线加载方式"]
+      "file": ["renderer.js"],
+      "detail": ["HTML压缩空格不完全剔除"]
   }, {
       "version": "1.2.10",
       "file": ["renderer.js"],
       "detail": ["添加acts.yuewen.com统计代码"]
+  }, {
+      "version": "1.2.11",
+      "file": ["renderer.js"],
+      "detail": ["添加activity.write.qq.com统计代码"]
   }],
   "description": "波波Electron桌面版",
   "main": "main.js",
